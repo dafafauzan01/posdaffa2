@@ -11,12 +11,12 @@
 
 <style>
     /* Reset & Typography Global */
-    body, .dashboard-wrapper {
-        background-color: #f8fafc;
+    .dashboard-wrapper {
+        background-color: var(--bg-page);
         min-height: 100vh;
         padding: 2rem 0 5rem;
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        color: #1e293b;
+        color: var(--text-primary);
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
     }
@@ -28,46 +28,48 @@
     }
 
     /* Heading khusus pakai Plus Jakarta Sans agar tegas */
-    h1, h2, h3, h4, h5, h6, .font-heading {
+    .dashboard-wrapper h1, .dashboard-wrapper h2, .dashboard-wrapper h3,
+    .dashboard-wrapper h4, .dashboard-wrapper h5, .dashboard-wrapper h6,
+    .dashboard-wrapper .font-heading {
         font-family: 'Plus Jakarta Sans', sans-serif !important;
         letter-spacing: -0.01em;
     }
 
     /* Section Divider */
     .section-divider {
-        border-bottom: 1.5px solid #e2e8f0;
+        border-bottom: 1.5px solid var(--border-color);
         margin: 1.5rem 0;
     }
 
     /* Base Card Style */
     .card-modern {
-        background: #ffffff;
+        background: var(--bg-card);
         border-radius: 16px;
-        border: 1px solid #e2e8f0;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        border: 1px solid var(--border-color);
+        box-shadow: 0 1px 3px rgba(31, 41, 55, 0.05);
     }
 
     .card-header-line {
-        border-bottom: 1px solid #f1f5f9;
+        border-bottom: 1px solid var(--border-color);
         padding-bottom: 0.85rem;
     }
 
     /* Metric Cards */
     .metric-card {
-        background: #ffffff;
+        background: var(--bg-card);
         border-radius: 16px;
-        border: 1px solid #e2e8f0;
+        border: 1px solid var(--border-color);
         padding: 1.25rem 1.35rem;
         display: flex;
         align-items: center;
         gap: 1.1rem;
-        box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+        box-shadow: 0 1px 2px rgba(31, 41, 55, 0.03);
         transition: transform 0.15s ease, box-shadow 0.15s ease;
     }
 
     .metric-card:hover {
         transform: translateY(-2px);
-        box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.06);
+        box-shadow: 0 8px 16px -4px rgba(31, 41, 55, 0.08);
     }
 
     .metric-icon-box {
@@ -81,16 +83,16 @@
         flex-shrink: 0;
     }
 
-    /* Color Themes */
-    .icon-blue { background-color: #eff6ff; color: #2563eb; }
-    .icon-purple { background-color: #f3e8ff; color: #9333ea; }
-    .icon-emerald { background-color: #ecfdf5; color: #059669; }
-    .icon-indigo { background-color: #e0e7ff; color: #4f46e5; }
+    /* Color Themes - selaras dengan palet biru/emerald/abu-abu */
+    .icon-blue    { background-color: var(--accent-primary-soft); color: var(--accent-primary-dark); }
+    .icon-emerald { background-color: var(--accent-success-soft); color: var(--accent-success); }
+    .icon-amber   { background-color: var(--accent-warning-soft); color: var(--accent-warning); }
+    .icon-slate   { background-color: var(--bg-page); color: var(--text-secondary); }
 
     /* Action Buttons */
     .action-btn-primary {
-        background: #4f46e5;
-        border: 1px solid #4338ca;
+        background: var(--accent-primary);
+        border: 1px solid var(--accent-primary-dark);
         color: #ffffff !important;
         border-radius: 14px;
         padding: 1rem 1.25rem;
@@ -102,7 +104,7 @@
     }
 
     .action-btn-primary:hover {
-        background: #4338ca;
+        background: var(--accent-primary-dark);
         transform: translateY(-1px);
     }
 
@@ -118,9 +120,9 @@
     }
 
     .action-btn-secondary {
-        background: #ffffff;
-        border: 1px solid #cbd5e1;
-        color: #0f172a !important;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        color: var(--text-primary) !important;
         border-radius: 14px;
         padding: 1rem 1.25rem;
         display: flex;
@@ -131,15 +133,15 @@
     }
 
     .action-btn-secondary:hover {
-        background: #f8fafc;
-        border-color: #94a3b8;
+        background: var(--bg-page);
+        border-color: var(--border-color);
     }
 
     .btn-icon-wrapper-secondary {
         width: 44px;
         height: 44px;
         border-radius: 10px;
-        background-color: #f1f5f9;
+        background-color: var(--bg-page);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -148,9 +150,9 @@
 
     /* Status Badge Live */
     .badge-live {
-        background-color: #f0fdf4;
-        color: #16a34a;
-        border: 1px solid #bbf7d0;
+        background-color: var(--accent-success-soft);
+        color: var(--accent-success);
+        border: 1px solid #B7E4E6;
         padding: 0.35rem 0.8rem;
         border-radius: 30px;
         font-weight: 600;
@@ -163,7 +165,7 @@
     .live-dot {
         width: 7px;
         height: 7px;
-        background-color: #16a34a;
+        background-color: var(--accent-success);
         border-radius: 50%;
         display: inline-block;
     }
@@ -171,7 +173,7 @@
     /* List Rows */
     .list-item-row {
         padding: 0.75rem 0;
-        border-bottom: 1px solid #f1f5f9;
+        border-bottom: 1px solid var(--border-color);
     }
 
     .list-item-row:last-child {
@@ -182,8 +184,8 @@
         width: 28px;
         height: 28px;
         border-radius: 8px;
-        background-color: #fef3c7;
-        color: #d97706;
+        background-color: var(--accent-warning-soft);
+        color: var(--accent-warning);
         font-weight: 700;
         display: flex;
         align-items: center;
@@ -196,8 +198,8 @@
         height: 40px;
         border-radius: 10px;
         object-fit: cover;
-        background-color: #f1f5f9;
-        border: 1px solid #e2e8f0;
+        background-color: var(--bg-page);
+        border: 1px solid var(--border-color);
     }
 </style>
 
@@ -207,12 +209,12 @@
         <!-- Header -->
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
             <div>
-                <h3 class="fw-bold mb-1" style="color: #0f172a; font-size: 1.6rem;">
+                <h3 class="fw-bold mb-1" style="color: var(--text-primary); font-size: 1.6rem;">
                     Dashboard Penjualan
                 </h3>
-                <p class="mb-0 text-secondary d-flex align-items-center gap-2" style="font-size: 0.875rem;">
-                    <i class="bi bi-calendar3 text-primary"></i>
-                    {{ \Carbon\Carbon::now()->translatedFormat('l, d F Y') }}
+                <p class="mb-0 d-flex align-items-center gap-2" style="font-size: 0.875rem; color: var(--text-secondary);">
+                    <i class="bi bi-calendar3" style="color: var(--accent-primary);"></i>
+                    {{ ($tanggalHariIni ?? \Carbon\Carbon::now())->translatedFormat('l, d F Y') }}
                 </p>
             </div>
             <div>
@@ -232,9 +234,9 @@
                         <i class="bi bi-graph-up-arrow"></i>
                     </div>
                     <div>
-                        <span class="text-uppercase text-muted fw-semibold" style="font-size: 0.7rem; letter-spacing: 0.04em;">Penjualan Hari Ini</span>
-                        <h4 class="fw-bold mb-0 mt-0.5" style="color: #0f172a; font-size: 1.35rem;">
-                            Rp {{ number_format($penjualanHariIni ?? 33000, 0, ',', '.') }}
+                        <span class="text-uppercase fw-semibold" style="font-size: 0.7rem; letter-spacing: 0.04em; color: var(--text-muted);">Penjualan Hari Ini</span>
+                        <h4 class="fw-bold mb-0 mt-0.5" style="color: var(--text-primary); font-size: 1.35rem;">
+                            Rp {{ number_format($ringkasan['total_penjualan'] ?? 0, 0, ',', '.') }}
                         </h4>
                     </div>
                 </div>
@@ -242,13 +244,13 @@
 
             <div class="col-12 col-sm-6 col-xl-3">
                 <div class="metric-card">
-                    <div class="metric-icon-box icon-purple">
+                    <div class="metric-icon-box icon-slate">
                         <i class="bi bi-receipt"></i>
                     </div>
                     <div>
-                        <span class="text-uppercase text-muted fw-semibold" style="font-size: 0.7rem; letter-spacing: 0.04em;">Total Transaksi</span>
-                        <h4 class="fw-bold mb-0 mt-0.5" style="color: #0f172a; font-size: 1.35rem;">
-                            {{ $totalTransaksi ?? 4 }} <span class="fs-6 fw-normal text-muted">struk</span>
+                        <span class="text-uppercase fw-semibold" style="font-size: 0.7rem; letter-spacing: 0.04em; color: var(--text-muted);">Total Transaksi</span>
+                        <h4 class="fw-bold mb-0 mt-0.5" style="color: var(--text-primary); font-size: 1.35rem;">
+                            {{ $ringkasan['total_transaksi'] ?? 0 }} <span class="fs-6 fw-normal" style="color: var(--text-muted);">struk</span>
                         </h4>
                     </div>
                 </div>
@@ -260,9 +262,9 @@
                         <i class="bi bi-cash-stack"></i>
                     </div>
                     <div>
-                        <span class="text-uppercase text-muted fw-semibold" style="font-size: 0.7rem; letter-spacing: 0.04em;">Pembayaran Tunai</span>
-                        <h4 class="fw-bold mb-0 mt-0.5" style="color: #0f172a; font-size: 1.35rem;">
-                            Rp {{ number_format($pembayaranTunai ?? 30000, 0, ',', '.') }}
+                        <span class="text-uppercase fw-semibold" style="font-size: 0.7rem; letter-spacing: 0.04em; color: var(--text-muted);">Pembayaran Tunai</span>
+                        <h4 class="fw-bold mb-0 mt-0.5" style="color: var(--text-primary); font-size: 1.35rem;">
+                            Rp {{ number_format($ringkasan['total_cash'] ?? 0, 0, ',', '.') }}
                         </h4>
                     </div>
                 </div>
@@ -270,13 +272,13 @@
 
             <div class="col-12 col-sm-6 col-xl-3">
                 <div class="metric-card">
-                    <div class="metric-icon-box icon-indigo">
+                    <div class="metric-icon-box icon-amber">
                         <i class="bi bi-qr-code-scan"></i>
                     </div>
                     <div>
-                        <span class="text-uppercase text-muted fw-semibold" style="font-size: 0.7rem; letter-spacing: 0.04em;">Non-Tunai / QRIS</span>
-                        <h4 class="fw-bold mb-0 mt-0.5" style="color: #0f172a; font-size: 1.35rem;">
-                            Rp {{ number_format($pembayaranNonTunai ?? 3000, 0, ',', '.') }}
+                        <span class="text-uppercase fw-semibold" style="font-size: 0.7rem; letter-spacing: 0.04em; color: var(--text-muted);">Non-Tunai / QRIS</span>
+                        <h4 class="fw-bold mb-0 mt-0.5" style="color: var(--text-primary); font-size: 1.35rem;">
+                            Rp {{ number_format($ringkasan['total_non_tunai'] ?? 0, 0, ',', '.') }}
                         </h4>
                     </div>
                 </div>
@@ -287,61 +289,50 @@
 
         <!-- Content Area -->
         <div class="row g-4">
-            
+
             <div class="col-lg-8 d-flex flex-column gap-4">
 
                 <!-- Produk Terlaris -->
                 <div class="card-modern p-4">
                     <div class="d-flex align-items-center gap-2 card-header-line mb-3">
-                        <div class="rounded-circle bg-warning bg-opacity-10 p-2 text-warning d-flex align-items-center justify-content-center" style="width: 34px; height: 34px;">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 34px; height: 34px; background: var(--accent-warning-soft); color: var(--accent-warning);">
                             <i class="bi bi-trophy-fill fs-6"></i>
                         </div>
                         <div>
-                            <h6 class="fw-bold mb-0 text-dark">Produk Terlaris</h6>
-                            <small class="text-muted" style="font-size: 0.8rem;">Performa produk terbaik hari ini</small>
+                            <h6 class="fw-bold mb-0" style="color: var(--text-primary);">Produk Terlaris</h6>
+                            <small style="font-size: 0.8rem; color: var(--text-muted);">Performa produk terbaik hari ini</small>
                         </div>
                     </div>
 
                     <div>
                         @if(isset($produkTerlaris) && count($produkTerlaris) > 0)
-                            @foreach($produkTerlaris as $index => $item)
+                            @foreach($produkTerlaris as $item)
                                 <div class="d-flex align-items-center justify-content-between list-item-row">
                                     <div class="d-flex align-items-center gap-3">
                                         <span class="item-rank-badge">{{ $loop->iteration }}</span>
-                                        @if(isset($item->foto))
+                                        @if(!empty($item->foto))
                                             <img src="{{ asset('storage/' . $item->foto) }}" class="product-img-thumbnail" alt="{{ $item->nama }}">
                                         @else
-                                            <div class="product-img-thumbnail d-flex align-items-center justify-content-center text-muted">
+                                            <div class="product-img-thumbnail d-flex align-items-center justify-content-center" style="color: var(--text-muted);">
                                                 <i class="bi bi-box-seam"></i>
                                             </div>
                                         @endif
                                         <div>
-                                            <h6 class="fw-semibold text-dark mb-0" style="font-size: 0.9rem;">{{ $item->nama }}</h6>
-                                            <small class="text-muted" style="font-size: 0.8rem;">Terjual {{ $item->total_terjual ?? $item->terjual ?? 0 }} pcs</small>
+                                            <h6 class="fw-semibold mb-0" style="font-size: 0.9rem; color: var(--text-primary);">{{ $item->nama }}</h6>
+                                            <small style="font-size: 0.8rem; color: var(--text-muted);">Terjual {{ $item->total_terjual }} pcs</small>
                                         </div>
                                     </div>
                                     <div class="text-end">
-                                        <span class="fw-bold text-primary" style="font-size: 0.95rem;">
-                                            Rp {{ number_format($item->total_pendapatan ?? $item->harga_jual * ($item->terjual ?? 1), 0, ',', '.') }}
+                                        <span class="fw-bold" style="font-size: 0.95rem; color: var(--accent-primary-dark);">
+                                            Rp {{ number_format($item->total_pendapatan, 0, ',', '.') }}
                                         </span>
                                     </div>
                                 </div>
                             @endforeach
                         @else
-                            <div class="d-flex align-items-center justify-content-between list-item-row">
-                                <div class="d-flex align-items-center gap-3">
-                                    <span class="item-rank-badge">1</span>
-                                    <div class="product-img-thumbnail d-flex align-items-center justify-content-center text-muted">
-                                        <i class="bi bi-box-seam fs-6"></i>
-                                    </div>
-                                    <div>
-                                        <h6 class="fw-semibold text-dark mb-0" style="font-size: 0.9rem;">sap</h6>
-                                        <small class="text-muted" style="font-size: 0.8rem;">Terjual 11 pcs</small>
-                                    </div>
-                                </div>
-                                <div class="text-end">
-                                    <span class="fw-bold text-primary" style="font-size: 0.95rem;">Rp 33.000</span>
-                                </div>
+                            <div class="text-center py-4" style="color: var(--text-muted);">
+                                <i class="bi bi-inbox fs-3 d-block mb-2"></i>
+                                <span class="small">Belum ada produk terjual hari ini</span>
                             </div>
                         @endif
                     </div>
@@ -349,31 +340,31 @@
 
                 <!-- Stok Info -->
                 <div class="row g-3">
-                    
+
                     <div class="col-md-6">
                         <div class="card-modern p-4 h-100">
                             <div class="d-flex align-items-center gap-2 card-header-line mb-3">
-                                <div class="rounded-circle bg-warning bg-opacity-10 p-2 text-warning d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; background: var(--accent-warning-soft); color: var(--accent-warning);">
                                     <i class="bi bi-exclamation-triangle-fill fs-6"></i>
                                 </div>
                                 <div>
-                                    <h6 class="fw-bold mb-0 text-dark">Stok Menipis</h6>
-                                    <small class="text-muted" style="font-size: 0.8rem;">Perlu diisi ulang segera</small>
+                                    <h6 class="fw-bold mb-0" style="color: var(--text-primary);">Stok Menipis</h6>
+                                    <small style="font-size: 0.8rem; color: var(--text-muted);">Perlu diisi ulang segera</small>
                                 </div>
                             </div>
 
-                            <div class="text-center">
-                                @if(isset($stokMenipis) && count($stokMenipis) > 0)
-                                    @foreach($stokMenipis as $item)
+                            <div>
+                                @if(isset($produkStokRendah) && $produkStokRendah->count() > 0)
+                                    @foreach($produkStokRendah as $item)
                                         <div class="d-flex align-items-center justify-content-between list-item-row">
-                                            <span class="fw-medium text-dark" style="font-size: 0.875rem;">{{ $item->nama }}</span>
-                                            <span class="badge bg-warning-subtle text-warning-emphasis rounded-pill">Sisa {{ $item->stok }}</span>
+                                            <span class="fw-medium" style="font-size: 0.875rem; color: var(--text-primary);">{{ $item->nama }}</span>
+                                            <span class="badge rounded-pill" style="background: var(--accent-warning-soft); color: var(--accent-warning);">Sisa {{ $item->stok }}</span>
                                         </div>
                                     @endforeach
                                 @else
-                                    <div class="py-3">
-                                        <i class="bi bi-check-circle-fill fs-3 text-success d-block mb-1"></i>
-                                        <span class="small text-muted fw-medium">Stok barang aman</span>
+                                    <div class="py-3 text-center">
+                                        <i class="bi bi-check-circle-fill fs-3 d-block mb-1" style="color: var(--accent-success);"></i>
+                                        <span class="small fw-medium" style="color: var(--text-muted);">Stok barang aman</span>
                                     </div>
                                 @endif
                             </div>
@@ -383,32 +374,27 @@
                     <div class="col-md-6">
                         <div class="card-modern p-4 h-100">
                             <div class="d-flex align-items-center gap-2 card-header-line mb-3">
-                                <div class="rounded-circle bg-danger bg-opacity-10 p-2 text-danger d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; background: var(--accent-danger-soft); color: var(--accent-danger);">
                                     <i class="bi bi-x-circle-fill fs-6"></i>
                                 </div>
                                 <div>
-                                    <h6 class="fw-bold mb-0 text-dark">Stok Habis</h6>
-                                    <small class="text-muted" style="font-size: 0.8rem;">Tidak dapat dijual</small>
+                                    <h6 class="fw-bold mb-0" style="color: var(--text-primary);">Stok Habis</h6>
+                                    <small style="font-size: 0.8rem; color: var(--text-muted);">Tidak dapat dijual</small>
                                 </div>
                             </div>
 
                             <div>
-                                @if(isset($stokHabis) && count($stokHabis) > 0)
-                                    @foreach($stokHabis as $item)
+                                @if(isset($produkStokHabis) && $produkStokHabis->count() > 0)
+                                    @foreach($produkStokHabis as $item)
                                         <div class="d-flex align-items-center justify-content-between list-item-row">
-                                            <span class="fw-medium text-dark" style="font-size: 0.875rem;">{{ $item->nama }}</span>
-                                            <span class="badge bg-danger-subtle text-danger rounded-pill">Stok Kosong</span>
+                                            <span class="fw-medium" style="font-size: 0.875rem; color: var(--text-primary);">{{ $item->nama }}</span>
+                                            <span class="badge rounded-pill" style="background: var(--accent-danger-soft); color: var(--accent-danger);">Stok Kosong</span>
                                         </div>
                                     @endforeach
                                 @else
-                                    <div class="d-flex align-items-center justify-content-between list-item-row">
-                                        <div class="d-flex align-items-center gap-2">
-                                            <div class="product-img-thumbnail d-flex align-items-center justify-content-center text-muted" style="width: 32px; height: 32px;">
-                                                <i class="bi bi-box"></i>
-                                            </div>
-                                            <span class="fw-medium text-dark" style="font-size: 0.875rem;">sap</span>
-                                        </div>
-                                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-2 py-0.5" style="font-size: 0.75rem;">Stok Kosong</span>
+                                    <div class="py-3 text-center">
+                                        <i class="bi bi-check-circle-fill fs-3 d-block mb-1" style="color: var(--accent-success);"></i>
+                                        <span class="small fw-medium" style="color: var(--text-muted);">Tidak ada stok yang habis</span>
                                     </div>
                                 @endif
                             </div>
@@ -423,12 +409,12 @@
             <div class="col-lg-4">
                 <div class="card-modern p-4 h-100 d-flex flex-column">
                     <div class="d-flex align-items-center gap-2 card-header-line mb-3">
-                        <div class="rounded-circle bg-primary bg-opacity-10 p-2 text-primary d-flex align-items-center justify-content-center" style="width: 34px; height: 34px;">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 34px; height: 34px; background: var(--accent-primary-soft); color: var(--accent-primary-dark);">
                             <i class="bi bi-lightning-charge-fill fs-6"></i>
                         </div>
                         <div>
-                            <h6 class="fw-bold mb-0 text-dark">Aksi Cepat</h6>
-                            <small class="text-muted" style="font-size: 0.8rem;">Pintasan operasional kasir</small>
+                            <h6 class="fw-bold mb-0" style="color: var(--text-primary);">Aksi Cepat</h6>
+                            <small style="font-size: 0.8rem; color: var(--text-muted);">Pintasan operasional kasir</small>
                         </div>
                     </div>
 
@@ -445,11 +431,11 @@
 
                         <a href="{{ route('produk.create') }}" class="action-btn-secondary">
                             <div class="btn-icon-wrapper-secondary">
-                                <i class="bi bi-plus-circle-fill fs-5 text-primary"></i>
+                                <i class="bi bi-plus-circle-fill fs-5" style="color: var(--accent-primary);"></i>
                             </div>
                             <div>
                                 <div class="fw-bold" style="font-size: 0.95rem;">Tambah Produk</div>
-                                <div class="small text-muted" style="font-size: 0.8rem;">Input item barang baru</div>
+                                <div class="small" style="font-size: 0.8rem; color: var(--text-muted);">Input item barang baru</div>
                             </div>
                         </a>
                     </div>

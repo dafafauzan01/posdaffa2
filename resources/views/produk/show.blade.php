@@ -5,13 +5,10 @@
 @section('content')
 
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-
     .page-wrapper {
-        background-color: #f8fafc;
+        background-color: var(--bg-page);
         min-height: 100vh;
         padding: 2.5rem 0 5rem;
-        font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
     }
 
     .main-container {
@@ -20,23 +17,21 @@
         padding: 0 1.5rem;
     }
 
-    /* Card Modern Base Style */
     .card-modern {
-        background: #ffffff;
+        background: var(--bg-card);
         border-radius: 20px;
-        border: 1px solid #e2e8f0;
-        box-shadow: 0 4px 20px -2px rgba(148, 163, 184, 0.12);
+        border: 1px solid var(--border-color);
+        box-shadow: 0 4px 20px -2px rgba(31, 41, 55, 0.06);
         overflow: hidden;
     }
 
-    /* Image Preview Box */
     .product-detail-img-wrapper {
         width: 100%;
         max-height: 320px;
         border-radius: 16px;
         overflow: hidden;
-        background-color: #f1f5f9;
-        border: 1px solid #e2e8f0;
+        background-color: var(--bg-page);
+        border: 1px solid var(--border-color);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -48,30 +43,28 @@
         object-fit: contain;
     }
 
-    /* Detail Table Custom */
     .table-detail td, .table-detail th {
         padding: 0.9rem 0;
         vertical-align: middle;
     }
 
     .table-detail th {
-        color: #64748b;
+        color: var(--text-muted);
         font-weight: 600;
         font-size: 0.9rem;
         width: 35%;
     }
 
     .table-detail td {
-        color: #0f172a;
+        color: var(--text-primary);
         font-weight: 600;
         font-size: 0.95rem;
     }
 
-    /* Stock Badges */
     .badge-stock-danger {
-        background-color: #fef2f2;
-        color: #dc2626;
-        border: 1px solid #fee2e2;
+        background-color: var(--accent-danger-soft);
+        color: var(--accent-danger);
+        border: 1px solid #fecaca;
         padding: 0.35rem 0.75rem;
         border-radius: 20px;
         font-weight: 600;
@@ -79,9 +72,9 @@
     }
 
     .badge-stock-warning {
-        background-color: #fffbeb;
-        color: #d97706;
-        border: 1px solid #fef3c7;
+        background-color: var(--accent-warning-soft);
+        color: var(--accent-warning);
+        border: 1px solid #fde68a;
         padding: 0.35rem 0.75rem;
         border-radius: 20px;
         font-weight: 600;
@@ -89,20 +82,19 @@
     }
 
     .badge-stock-success {
-        background-color: #f0fdf4;
-        color: #16a34a;
-        border: 1px solid #dcfce7;
+        background-color: var(--accent-success-soft);
+        color: var(--accent-success);
+        border: 1px solid #B7E4E6;
         padding: 0.35rem 0.75rem;
         border-radius: 20px;
         font-weight: 600;
         font-size: 0.82rem;
     }
 
-    /* Buttons */
     .btn-custom-secondary {
-        background-color: #ffffff;
-        color: #475569;
-        border: 1px solid #cbd5e1;
+        background-color: var(--bg-card);
+        color: var(--text-secondary);
+        border: 1px solid var(--border-color);
         border-radius: 12px;
         padding: 0.65rem 1.4rem;
         font-weight: 600;
@@ -115,20 +107,20 @@
     }
 
     .btn-custom-secondary:hover {
-        background-color: #f8fafc;
-        color: #0f172a;
-        border-color: #94a3b8;
+        background-color: var(--bg-page);
+        color: var(--text-primary);
+        border-color: var(--border-color);
     }
 
     .btn-gradient-primary {
-        background: linear-gradient(135deg, #7c3aed 0%, #2563eb 100%);
+        background: var(--accent-primary);
         color: #ffffff;
         border: none;
         border-radius: 12px;
         padding: 0.65rem 1.4rem;
         font-weight: 600;
         font-size: 0.9rem;
-        box-shadow: 0 4px 15px rgba(124, 58, 237, 0.25);
+        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.2);
         transition: all 0.2s ease;
         text-decoration: none;
         display: inline-flex;
@@ -137,8 +129,7 @@
     }
 
     .btn-gradient-primary:hover {
-        opacity: 0.95;
-        transform: translateY(-1px);
+        background: var(--accent-primary-dark);
         color: #ffffff;
     }
 </style>
@@ -149,10 +140,10 @@
         <!-- Back & Title Bar -->
         <div class="d-flex align-items-center justify-content-between mb-4">
             <div>
-                <h3 class="fw-bold mb-1" style="color: #0f172a; letter-spacing: -0.02em;">
+                <h3 class="fw-bold mb-1" style="color: var(--text-primary); letter-spacing: -0.02em;">
                     Detail Produk
                 </h3>
-                <p class="mb-0 text-muted" style="font-size: 0.9rem;">
+                <p class="mb-0" style="color: var(--text-muted); font-size: 0.9rem;">
                     Informasi lengkap barang & riwayat pendaftaran
                 </p>
             </div>
@@ -164,14 +155,14 @@
         <!-- Main Detail Card -->
         <div class="card-modern p-4 p-md-5">
             <div class="row g-4 align-items-start">
-                
+
                 {{-- Foto Produk Section --}}
                 <div class="col-md-5">
                     <div class="product-detail-img-wrapper p-2">
                         @if($produk->foto)
                             <img src="{{ asset('storage/' . $produk->foto) }}" alt="{{ $produk->nama }}" class="product-detail-img">
                         @else
-                            <div class="text-center text-muted p-4">
+                            <div class="text-center p-4" style="color: var(--text-muted);">
                                 <i class="bi bi-image fs-1 d-block mb-2"></i>
                                 <span class="small fw-medium">Tidak ada foto produk</span>
                             </div>
@@ -181,7 +172,7 @@
 
                 {{-- Informasi Produk Section --}}
                 <div class="col-md-7">
-                    <h4 class="fw-bold mb-3" style="color: #0f172a;">
+                    <h4 class="fw-bold mb-3" style="color: var(--text-primary);">
                         {{ $produk->nama }}
                     </h4>
 
@@ -189,20 +180,32 @@
                         <table class="table table-borderless table-detail mb-3">
                             <tbody>
                                 <tr class="border-bottom">
+                                    <th>Jenis Produk</th>
+                                    <td>
+                                        @if($produk->jenis === 'Makanan')
+                                            <span class="badge-stock-warning"><i class="bi bi-egg-fried me-1"></i>Makanan</span>
+                                        @elseif($produk->jenis === 'Minuman')
+                                            <span class="badge-stock-success"><i class="bi bi-cup-straw me-1"></i>Minuman</span>
+                                        @else
+                                            <span class="badge-stock-danger"><i class="bi bi-box-seam me-1"></i>{{ $produk->jenis ?? 'Lainnya' }}</span>
+                                        @endif
+                                    </td>
+                                </tr>
+                                <tr class="border-bottom">
                                     <th>Harga Beli (Modal)</th>
-                                    <td class="text-secondary">
+                                    <td style="color: var(--text-secondary); font-weight: 600;">
                                         Rp {{ number_format($produk->harga_beli, 0, ',', '.') }}
                                     </td>
                                 </tr>
                                 <tr class="border-bottom">
                                     <th>Harga Jual</th>
-                                    <td class="text-primary fw-bold fs-5">
+                                    <td class="fw-bold fs-5" style="color: var(--accent-primary-dark);">
                                         Rp {{ number_format($produk->harga_jual, 0, ',', '.') }}
                                     </td>
                                 </tr>
                                 <tr class="border-bottom">
                                     <th>Margin Keuntungan</th>
-                                    <td class="text-success fw-bold">
+                                    <td class="fw-bold" style="color: var(--accent-success);">
                                         Rp {{ number_format($produk->harga_jual - $produk->harga_beli, 0, ',', '.') }}
                                     </td>
                                 </tr>
@@ -226,7 +229,7 @@
                                 </tr>
                                 <tr>
                                     <th>Tanggal Dibuat</th>
-                                    <td class="text-muted fw-normal">
+                                    <td class="fw-normal" style="color: var(--text-muted);">
                                         <i class="bi bi-calendar-event me-1"></i>
                                         {{ $produk->created_at->format('d F Y') }}
                                     </td>
