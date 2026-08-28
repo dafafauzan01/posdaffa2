@@ -267,12 +267,17 @@
                                     <div class="fw-bold" style="color: var(--text-primary);">{{ $product->nama }}</div>
                                 </td>
                                 <td>
-                                    @if($product->jenis === 'Makanan')
-                                        <span class="badge-stock-warning"><i class="bi bi-egg-fried me-1"></i>Makanan</span>
-                                    @elseif($product->jenis === 'Minuman')
-                                        <span class="badge-stock-success"><i class="bi bi-cup-straw me-1"></i>Minuman</span>
+                                    @php
+                                        // Mengambil nama jenis dari relasi jenis_id
+                                        $namaJenis = $product->jenis->nama_jenis ?? $product->jenis->nama ?? 'Lainnya';
+                                    @endphp
+
+                                    @if(strtolower($namaJenis) === 'makanan')
+                                        <span class="badge-stock-warning"><i class="bi bi-egg-fried me-1"></i>{{ $namaJenis }}</span>
+                                    @elseif(strtolower($namaJenis) === 'minuman')
+                                        <span class="badge-stock-success"><i class="bi bi-cup-straw me-1"></i>{{ $namaJenis }}</span>
                                     @else
-                                        <span class="badge-stock-danger"><i class="bi bi-box-seam me-1"></i>{{ $product->jenis ?? 'Lainnya' }}</span>
+                                        <span class="badge-stock-danger"><i class="bi bi-box-seam me-1"></i>{{ $namaJenis }}</span>
                                     @endif
                                 </td>
                                 <td style="color: var(--text-muted);">

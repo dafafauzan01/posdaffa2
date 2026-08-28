@@ -25,6 +25,13 @@
                 <span>Pengguna</span>
             </a>
 
+            <!-- Menu Jenis Produk (Baru) -->
+            <a href="{{ route('jenis.index') }}"
+               class="sidebar-link {{ request()->routeIs('jenis*') ? 'sidebar-link-active' : '' }}">
+                <i class="bi bi-tags"></i>
+                <span>Jenis Produk</span>
+            </a>
+
             <a href="{{ route('produk.index') }}"
                class="sidebar-link {{ request()->routeIs('produk*') ? 'sidebar-link-active' : '' }}">
                 <i class="bi bi-box-seam"></i>
