@@ -90,6 +90,19 @@
     .btn-checkout:hover { background: #0A5B63; color: #fff; }
     .btn-checkout.disabled { opacity: 0.6; }
 
+    .btn-print {
+        background: #2563eb;
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        font-weight: 700;
+        padding: 0.75rem;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+    }
+    .btn-print:hover { background: #1d4ed8; color: #fff; }
+
     .btn-cancel-outline {
         background: transparent;
         color: var(--accent-danger);
@@ -155,7 +168,8 @@
                                 <div class="col-7">
                                     <button type="submit"
                                             class="product-pick-btn btn w-100 text-start p-2
-                                            {{ $sale->status === 'COMPLETED' ? 'disabled' : '' }}">
+                                            {{ $sale->status === 'COMPLETED' ? 'disabled' : '' }}"
+                                            {{ $sale->status === 'COMPLETED' ? 'disabled' : '' }}>
                                         <div class="fw-semibold">{{ $product->nama }}</div>
                                         <small class="price-tag">
                                             Rp {{ number_format($product->harga_jual) }}
@@ -168,11 +182,12 @@
                                            name="quantity"
                                            value="1"
                                            min="1"
-                                           class="form-control qty-input">
+                                           class="form-control qty-input"
+                                           {{ $sale->status === 'COMPLETED' ? 'disabled' : '' }}>
                                 </div>
 
                                 <div class="col-2">
-                                    <button class="btn btn-add w-100">+</button>
+                                    <button class="btn btn-add w-100" {{ $sale->status === 'COMPLETED' ? 'disabled' : '' }}>+</button>
                                 </div>
                             </form>
                         @endforeach
@@ -199,20 +214,25 @@
                         <tbody>
                             @forelse ($sale->itemPenjualan as $item)
                                 <tr>
-                                    <td>{{ $item->produk->nama }}</td>
-                                    <td>Rp {{ number_format($item->produk->harga_jual) }}</td>
+                                    <td>{{ $item->produk?->nama ?? 'Produk Dihapus' }}</td>
+                                    <td>Rp {{ number_format($item->produk?->harga_jual ?? 0) }}</td>
 
                                     <td>
-                                        <form method="POST"
-                                              action="{{ route('itempenjualan.update', $item->id) }}">
-                                            @csrf
-                                            @method('PUT')
-                                            <input type="number"
-                                                   name="quantity"
-                                                   value="{{ $item->kuantitas }}"
-                                                   min="1"
-                                                   class="form-control form-control-sm qty-input">
-                                        </form>
+                                        @if($sale->status === 'OPEN')
+                                            <form method="POST"
+                                                  action="{{ route('itempenjualan.update', $item->id) }}">
+                                                @csrf
+                                                @method('PUT')
+                                                <input type="number"
+                                                       name="quantity"
+                                                       value="{{ $item->kuantitas }}"
+                                                       min="1"
+                                                       class="form-control form-control-sm qty-input"
+                                                       onchange="this.form.submit()">
+                                            </form>
+                                        @else
+                                            <span>{{ $item->kuantitas }}</span>
+                                        @endif
                                     </td>
 
                                     <td class="fw-semibold" style="color: var(--accent-primary-dark);">
@@ -220,16 +240,20 @@
                                     </td>
 
                                     <td>
-                                        @can('delete', $item)
-                                            <form method="POST"
-                                                  action="{{ route('itempenjualan.destroy', $item->id) }}">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button class="btn-remove-item">
-                                                    Hapus
-                                                </button>
-                                            </form>
-                                        @endcan
+                                        @if($sale->status === 'OPEN')
+                                            @can('delete', $item)
+                                                <form method="POST"
+                                                      action="{{ route('itempenjualan.destroy', $item->id) }}">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button class="btn-remove-item">
+                                                        Hapus
+                                                    </button>
+                                                </form>
+                                            @endcan
+                                        @else
+                                            <span class="text-muted">-</span>
+                                        @endif
                                     </td>
                                 </tr>
                             @empty
@@ -248,38 +272,49 @@
                             Total: <span style="color: var(--accent-primary-dark);">Rp {{ number_format($sale->total_pembayaran) }}</span>
                         </h5>
 
-                        {{-- CHECKOUT --}}
-                        <form method="POST"
-                              action="{{ route('penjualan.update', $sale->id) }}"
-                              onsubmit="return confirm('Yakin ingin checkout?')">
-                            @csrf
-                            @method('PUT')
+                        {{-- CHECKOUT ATAU CETAK STRUK --}}
+                        @if ($sale->status === 'COMPLETED')
+                            <a href="{{ route('penjualan.print', $sale->id) }}" target="_blank" class="btn btn-print w-100">
+                                🖨️ Cetak Struk Transaksi
+                            </a>
 
-                            <select name="payment_method" class="form-select mb-2 qty-input" required>
-                                <option value="">Pilih Pembayaran</option>
-                                <option value="CASH">Cash</option>
-                                <option value="QRIS">QRIS</option>
-                            </select>
-
-                            <button class="btn btn-checkout w-100
-                                    {{ $sale->status === 'COMPLETED' ? 'disabled' : '' }}">
-                                Checkout
-                            </button>
-                        </form>
-
-                        {{-- BATAL --}}
-                        @can('delete', $sale)
+                            {{-- OTOMATIS POP-UP DIALOG PRINT SAAT TRANSAKSI SELESAI --}}
+                            <script>
+                                window.open("{{ route('penjualan.print', $sale->id) }}", "_blank");
+                            </script>
+                        @else
                             <form method="POST"
-                                  action="{{ route('penjualan.destroy', $sale->id) }}"
-                                  onsubmit="return confirm('Yakin ingin membatalkan transaksi?')"
-                                  class="mt-2">
+                                  action="{{ route('penjualan.update', $sale->id) }}"
+                                  onsubmit="return confirm('Yakin ingin checkout?')">
                                 @csrf
-                                @method('DELETE')
-                                <button class="btn btn-cancel-outline w-100">
-                                    Batalkan Transaksi
+                                @method('PUT')
+
+                                <select name="payment_method" class="form-select mb-2 qty-input" required>
+                                    <option value="">Pilih Pembayaran</option>
+                                    <option value="CASH">Cash</option>
+                                    <option value="QRIS">QRIS</option>
+                                </select>
+
+                                <button class="btn btn-checkout w-100">
+                                    Checkout
                                 </button>
                             </form>
-                        @endcan
+
+                            {{-- BATAL --}}
+                            @can('delete', $sale)
+                                <form method="POST"
+                                      action="{{ route('penjualan.destroy', $sale->id) }}"
+                                      onsubmit="return confirm('Yakin ingin membatalkan transaksi?')"
+                                      class="mt-2">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="btn btn-cancel-outline w-100">
+                                        Batalkan Transaksi
+                                    </button>
+                                </form>
+                            @endcan
+                        @endif
+
                     </div>
 
                 </div>
