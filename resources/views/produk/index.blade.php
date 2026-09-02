@@ -209,11 +209,9 @@
                     Kelola ketersediaan barang, stok, dan harga jual
                 </p>
             </div>
-            @can('create', App\Models\Produk::class)
-                <a href="{{ route('produk.create') }}" class="btn-gradient-primary">
-                    <i class="bi bi-plus-circle-fill fs-6"></i> Tambah Produk
-                </a>
-            @endcan
+            <a href="{{ route('produk.create') }}" class="btn-gradient-primary">
+                <i class="bi bi-plus-circle-fill fs-6"></i> Tambah Produk
+            </a>
         </div>
 
         <!-- Search Bar -->
@@ -307,21 +305,17 @@
                                             <i class="bi bi-eye-fill"></i>
                                         </a>
 
-                                        @can('update', $product)
-                                            <a href="{{ route('produk.edit', $product) }}" class="btn-action-icon btn-action-edit" title="Edit Produk">
-                                                <i class="bi bi-pencil-square"></i>
-                                            </a>
-                                        @endcan
+                                        <a href="{{ route('produk.edit', $product) }}" class="btn-action-icon btn-action-edit" title="Edit Produk">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
 
-                                        @can('delete', $product)
-                                            <form action="{{ route('produk.destroy', $product) }}" method="POST" class="d-inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn-action-icon btn-action-delete" onclick="return confirm('Yakin ingin menghapus produk ini?')" title="Hapus Produk">
-                                                    <i class="bi bi-trash3-fill"></i>
-                                                </button>
-                                            </form>
-                                        @endcan
+                                        <form action="{{ route('produk.destroy', $product) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn-action-icon btn-action-delete" onclick="return confirm('Yakin ingin menghapus produk ini?')" title="Hapus Produk">
+                                                <i class="bi bi-trash3-fill"></i>
+                                            </button>
+                                        </form>
                                     </div>
                                 </td>
                             </tr>
