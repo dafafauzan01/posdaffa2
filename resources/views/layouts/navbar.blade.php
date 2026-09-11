@@ -19,13 +19,20 @@
                 <span>Dashboard</span>
             </a>
 
+            {{-- Pengecekan Admin: Menangani huruf besar/kecil maupun angka ID role --}}
+            @if(auth()->check() && (
+                strtolower(auth()->user()->role ?? '') === 'admin' || 
+                (auth()->user()->is_admin ?? false) == true || 
+                (auth()->user()->role_id ?? null) == 1
+            ))
             <a href="{{ route('admin.users') }}"
                class="sidebar-link {{ request()->routeIs('admin.users*') ? 'sidebar-link-active' : '' }}">
                 <i class="bi bi-people"></i>
                 <span>Pengguna</span>
             </a>
+            @endif
 
-            <!-- Menu Jenis Produk (Baru) -->
+            <!-- Menu Jenis Produk -->
             <a href="{{ route('jenis.index') }}"
                class="sidebar-link {{ request()->routeIs('jenis*') ? 'sidebar-link-active' : '' }}">
                 <i class="bi bi-tags"></i>

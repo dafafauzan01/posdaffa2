@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'POS')
+@section('title', 'POS - Transaksi Penjualan')
 
 @section('content')
 
@@ -88,7 +88,7 @@
         padding: 0.75rem;
     }
     .btn-checkout:hover { background: #0A5B63; color: #fff; }
-    .btn-checkout.disabled { opacity: 0.6; }
+    .btn-checkout.disabled, .btn-checkout:disabled { opacity: 0.6; cursor: not-allowed; }
 
     .btn-print {
         background: #2563eb;
@@ -132,7 +132,7 @@
 
         {{-- ALERT ERROR --}}
         @if (session('errors'))
-            <div class="alert alert-danger">
+            <div class="alert alert-danger mb-3">
                 {{ session('errors') }}
             </div>
         @endif
@@ -144,7 +144,7 @@
             {{-- ================= PRODUK ================= --}}
             <div class="col-md-6">
                 <div class="card-modern">
-                    <div class="p-3" style="max-height:70vh; overflow:auto">
+                    <div class="p-3" style="max-height:70vh; overflow-y:auto">
 
                         {{-- SEARCH --}}
                         <form method="GET" action="{{ route('penjualan.create') }}" class="mb-3">
@@ -167,8 +167,7 @@
 
                                 <div class="col-7">
                                     <button type="submit"
-                                            class="product-pick-btn btn w-100 text-start p-2
-                                            {{ $sale->status === 'COMPLETED' ? 'disabled' : '' }}"
+                                            class="product-pick-btn btn w-100 text-start p-2 {{ $sale->status === 'COMPLETED' ? 'disabled' : '' }}"
                                             {{ $sale->status === 'COMPLETED' ? 'disabled' : '' }}>
                                         <div class="fw-semibold">{{ $product->nama }}</div>
                                         <small class="price-tag">
@@ -187,7 +186,7 @@
                                 </div>
 
                                 <div class="col-2">
-                                    <button class="btn btn-add w-100" {{ $sale->status === 'COMPLETED' ? 'disabled' : '' }}>+</button>
+                                    <button type="submit" class="btn btn-add w-100" {{ $sale->status === 'COMPLETED' ? 'disabled' : '' }}>+</button>
                                 </div>
                             </form>
                         @endforeach
@@ -246,7 +245,7 @@
                                                       action="{{ route('itempenjualan.destroy', $item->id) }}">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button class="btn-remove-item">
+                                                    <button type="submit" class="btn-remove-item">
                                                         Hapus
                                                     </button>
                                                 </form>
@@ -258,7 +257,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="text-center" style="color: var(--text-muted);">
+                                    <td colspan="5" class="text-center py-4" style="color: var(--text-muted);">
                                         Keranjang kosong
                                     </td>
                                 </tr>
@@ -274,11 +273,17 @@
 
                         {{-- CHECKOUT ATAU CETAK STRUK --}}
                         @if ($sale->status === 'COMPLETED')
+                            @if($sale->payment_method === 'CASH')
+                                <div class="alert alert-secondary p-2 mb-3">
+                                    <small class="d-block">Bayar: <strong>Rp {{ number_format($sale->paid_amount ?? 0) }}</strong></small>
+                                    <small class="d-block">Kembalian: <strong class="text-success">Rp {{ number_format(($sale->paid_amount ?? 0) - $sale->total_pembayaran) }}</strong></small>
+                                </div>
+                            @endif
+
                             <a href="{{ route('penjualan.print', $sale->id) }}" target="_blank" class="btn btn-print w-100">
                                 🖨️ Cetak Struk Transaksi
                             </a>
 
-                            {{-- OTOMATIS POP-UP DIALOG PRINT SAAT TRANSAKSI SELESAI --}}
                             <script>
                                 window.open("{{ route('penjualan.print', $sale->id) }}", "_blank");
                             </script>
@@ -289,13 +294,31 @@
                                 @csrf
                                 @method('PUT')
 
-                                <select name="payment_method" class="form-select mb-2 qty-input" required>
+                                <select name="payment_method" id="payment_method" class="form-select mb-2 qty-input" required onchange="toggleCashInput()">
                                     <option value="">Pilih Pembayaran</option>
                                     <option value="CASH">Cash</option>
                                     <option value="QRIS">QRIS</option>
                                 </select>
 
-                                <button class="btn btn-checkout w-100">
+                                {{-- FIELD DIBAYAR DAN KEMBALIAN --}}
+                                <div id="cash-group" style="display: none;" class="mb-3 p-2 border rounded bg-light">
+                                    <div class="mb-2">
+                                        <label class="form-label small fw-bold text-secondary mb-1">Jumlah Bayar (Rp)</label>
+                                        <input type="number" 
+                                               name="paid_amount" 
+                                               id="paid_amount" 
+                                               class="form-control qty-input" 
+                                               placeholder="Masukkan nominal bayar"
+                                               min="{{ $sale->total_pembayaran }}" 
+                                               oninput="calculateChange()">
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="small fw-bold text-secondary">Kembalian:</span>
+                                        <span class="fw-bold text-success" id="change-text">Rp 0</span>
+                                    </div>
+                                </div>
+
+                                <button type="submit" id="btn-submit-checkout" class="btn btn-checkout w-100" {{ $sale->itemPenjualan->isEmpty() ? 'disabled' : '' }}>
                                     Checkout
                                 </button>
                             </form>
@@ -308,7 +331,7 @@
                                       class="mt-2">
                                     @csrf
                                     @method('DELETE')
-                                    <button class="btn btn-cancel-outline w-100">
+                                    <button type="submit" class="btn btn-cancel-outline w-100">
                                         Batalkan Transaksi
                                     </button>
                                 </form>
@@ -323,4 +346,47 @@
         </div>
     </div>
 </div>
+
+{{-- SCRIPT HITUNG KEMBALIAN OTOMATIS --}}
+<script>
+    const totalPayment = {{ $sale->total_pembayaran ?? 0 }};
+
+    function toggleCashInput() {
+        const paymentMethod = document.getElementById('payment_method').value;
+        const cashGroup = document.getElementById('cash-group');
+        const paidAmountInput = document.getElementById('paid_amount');
+        const btnSubmit = document.getElementById('btn-submit-checkout');
+
+        if (paymentMethod === 'CASH') {
+            cashGroup.style.display = 'block';
+            paidAmountInput.setAttribute('required', 'required');
+            calculateChange();
+        } else {
+            cashGroup.style.display = 'none';
+            paidAmountInput.removeAttribute('required');
+            btnSubmit.disabled = false;
+        }
+    }
+
+    function calculateChange() {
+        const paymentMethod = document.getElementById('payment_method').value;
+        if (paymentMethod !== 'CASH') return;
+
+        const paidAmount = parseFloat(document.getElementById('paid_amount').value) || 0;
+        const changeText = document.getElementById('change-text');
+        const btnSubmit = document.getElementById('btn-submit-checkout');
+
+        const change = paidAmount - totalPayment;
+
+        if (change >= 0) {
+            changeText.innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(change);
+            changeText.className = 'fw-bold text-success';
+            btnSubmit.disabled = false;
+        } else {
+            changeText.innerText = 'Uang Kurang (Rp ' + new Intl.NumberFormat('id-ID').format(Math.abs(change)) + ')';
+            changeText.className = 'fw-bold text-danger';
+            btnSubmit.disabled = true;
+        }
+    }
+</script>
 @endsection

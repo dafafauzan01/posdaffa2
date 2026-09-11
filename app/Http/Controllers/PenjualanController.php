@@ -43,11 +43,12 @@ class PenjualanController extends Controller
         $sale = Penjualan::firstOrCreate(
             [
                 'user_id' => Auth::id(),
-                'status'  => 'OPEN', // membuat data penjualan kosong ketika user masuk ke halaman
+                'status'  => 'OPEN',
             ],
             [
-                'total_pembayaran' => 0,
-                'metode_pembayaran' => 'CASH'
+                'total_pembayaran'  => 0,
+                'metode_pembayaran' => 'CASH',
+                'paid_amount'       => 0,
             ]
         );
 
@@ -110,8 +111,17 @@ class PenjualanController extends Controller
      */
     public function update(Request $request, Penjualan $penjualan)
     {
+        $total = $penjualan->itemPenjualan()->sum('subtotal');
+
+        // Validasi input pembayaran
         $request->validate([
-            'payment_method' => 'required|in:CASH,QRIS'
+            'payment_method' => 'required|in:CASH,QRIS',
+            'paid_amount'    => $request->payment_method === 'CASH' 
+                                ? 'required|numeric|min:' . $total 
+                                : 'nullable|numeric',
+        ], [
+            'paid_amount.required' => 'Nominal pembayaran tunai wajib diisi.',
+            'paid_amount.min'      => 'Nominal tunai yang dibayarkan kurang dari total pembayaran.',
         ]);
 
         if ($penjualan->status !== 'OPEN') {
@@ -122,14 +132,18 @@ class PenjualanController extends Controller
             return back()->with('errors', 'Keranjang masih kosong');
         }
 
-        DB::transaction(function () use ($penjualan, $request) {
+        DB::transaction(function () use ($penjualan, $request, $total) {
 
-            // Hitung ulang total (anti manipulasi)
-            $total = $penjualan->itemPenjualan()->sum('subtotal');
+            // Tentukan jumlah yang dibayar
+            // Jika CASH diambil dari input form, jika QRIS dianggap pas sesuai total
+            $paidAmount = $request->payment_method === 'CASH' 
+                ? $request->paid_amount 
+                : $total;
 
             $penjualan->update([
                 'metode_pembayaran' => $request->payment_method,
                 'total_pembayaran'  => $total,
+                'paid_amount'       => $paidAmount,
                 'status'            => 'COMPLETED'
             ]);
         });
@@ -156,7 +170,7 @@ class PenjualanController extends Controller
             // 1. Hapus dulu seluruh item penjualan yang terikat dengan transaksi ini
             DB::table('item_penjualan')->where('penjualan_id', $penjualan->id)->delete();
 
-            // 2. Hapus data penjuallannya
+            // 2. Hapus data penjualannya
             $penjualan->delete();
         });
 

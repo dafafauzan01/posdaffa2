@@ -74,7 +74,7 @@
         color: #ffffff;
     }
 
-    /* CSS KHUSUS PRINT STRUK THERNAL (Hanya aktif saat tombol Print ditekan) */
+    /* CSS KHUSUS PRINT STRUK THERMAL (Hanya aktif saat dialog print terbuka) */
     #printable-receipt {
         display: none;
     }
@@ -112,8 +112,8 @@
         <div class="d-flex align-items-center justify-content-between mb-4">
             <h4 class="fw-bold mb-0" style="color: var(--text-primary);">Detail Penjualan</h4>
             
-            {{-- TOMBOL PRINT (Memanggil fungsi window.print()) --}}
-            <button onclick="window.print()" class="btn-custom-primary">
+            {{-- TOMBOL PRINT --}}
+            <button type="button" onclick="window.print()" class="btn-custom-primary">
                 🖨️ Cetak Struk
             </button>
         </div>
@@ -129,18 +129,34 @@
                     </tr>
                     <tr>
                         <th>Metode Pembayaran</th>
-                        <td>: {{ $penjualan->metode_pembayaran ?? 'CASH' }}</td>
+                        <td>: {{ $penjualan->payment_method ?? $penjualan->metode_pembayaran ?? 'CASH' }}</td>
                     </tr>
                     <tr>
                         <th>Status</th>
-                        <td>: {{ ucfirst($penjualan->status) }}</td>
+                        <td>: {{ ucfirst(strtolower($penjualan->status ?? 'COMPLETED')) }}</td>
                     </tr>
                     <tr>
                         <th>Total Pembayaran</th>
                         <td>
-                            : <strong style="color: var(--accent-primary-dark);">Rp {{ number_format($penjualan->total_pembayaran, 0, ',', '.') }}</strong>
+                            : <strong style="color: var(--accent-primary-dark, #2563eb);">Rp {{ number_format($penjualan->total_pembayaran ?? 0, 0, ',', '.') }}</strong>
                         </td>
                     </tr>
+                    
+                    {{-- DETAIL BAYAR DAN KEMBALIAN (KHUSUS CASH) --}}
+                    @if(($penjualan->payment_method ?? $penjualan->metode_pembayaran ?? 'CASH') === 'CASH')
+                    <tr>
+                        <th>Tunai Diterima</th>
+                        <td>: Rp {{ number_format($penjualan->paid_amount ?? 0, 0, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <th>Kembalian</th>
+                        <td>
+                            : <strong class="text-success">
+                                Rp {{ number_format(($penjualan->paid_amount ?? 0) - ($penjualan->total_pembayaran ?? 0), 0, ',', '.') }}
+                            </strong>
+                        </td>
+                    </tr>
+                    @endif
                 </table>
             </div>
         </div>
@@ -148,7 +164,7 @@
         {{-- ITEM PRODUK --}}
         <div class="card-modern">
             <div class="card-modern-header">Produk Yang Dibeli</div>
-            <div class="p-4">
+            <div class="p-4 overflow-auto">
                 <table class="table table-bordered mb-0" style="border-color: var(--border-color);">
                     <thead>
                         <tr style="background: var(--bg-page); color: var(--text-muted);">
@@ -164,13 +180,13 @@
                         <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $item->produk?->nama ?? 'Produk Dihapus' }}</td>
-                            <td>Rp {{ number_format($item->harga_satuan, 0, ',', '.') }}</td>
+                            <td>Rp {{ number_format($item->harga_satuan ?? $item->produk?->harga_jual ?? 0, 0, ',', '.') }}</td>
                             <td>{{ $item->kuantitas }}</td>
-                            <td>Rp {{ number_format($item->subtotal, 0, ',', '.') }}</td>
+                            <td>Rp {{ number_format($item->subtotal ?? 0, 0, ',', '.') }}</td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="5" class="text-center" style="color: var(--text-muted);">
+                            <td colspan="5" class="text-center py-3" style="color: var(--text-muted);">
                                 Tidak ada item penjualan
                             </td>
                         </tr>
@@ -179,10 +195,24 @@
                     <tfoot>
                         <tr>
                             <th colspan="4" class="text-end">Total</th>
-                            <th style="color: var(--accent-primary-dark);">
-                                Rp {{ number_format($penjualan->total_pembayaran, 0, ',', '.') }}
+                            <th style="color: var(--accent-primary-dark, #2563eb);">
+                                Rp {{ number_format($penjualan->total_pembayaran ?? 0, 0, ',', '.') }}
                             </th>
                         </tr>
+                        @if(($penjualan->payment_method ?? $penjualan->metode_pembayaran ?? 'CASH') === 'CASH')
+                        <tr>
+                            <th colspan="4" class="text-end">Bayar (Cash)</th>
+                            <th>
+                                Rp {{ number_format($penjualan->paid_amount ?? 0, 0, ',', '.') }}
+                            </th>
+                        </tr>
+                        <tr>
+                            <th colspan="4" class="text-end">Kembalian</th>
+                            <th class="text-success">
+                                Rp {{ number_format(($penjualan->paid_amount ?? 0) - ($penjualan->total_pembayaran ?? 0), 0, ',', '.') }}
+                            </th>
+                        </tr>
+                        @endif
                     </tfoot>
                 </table>
             </div>
@@ -193,7 +223,7 @@
                 ← Kembali
             </a>
 
-            <button onclick="window.print()" class="btn-custom-primary">
+            <button type="button" onclick="window.print()" class="btn-custom-primary">
                 🖨️ Cetak Struk
             </button>
         </div>
@@ -201,7 +231,7 @@
     </div>
 </div>
 
-{{-- AREA STRUK UNTUK MESIN PRINTER (Tersembunyi di layar, hanya muncul saat di-print) --}}
+{{-- AREA STRUK UNTUK MESIN PRINTER THERMAL --}}
 <div id="printable-receipt">
     <div class="text-center">
         <strong style="font-size: 14px;">POS STORE</strong><br>
@@ -217,7 +247,7 @@
         </tr>
         <tr>
             <td>Tanggal</td>
-            <td class="text-right">{{ $penjualan->created_at->format('d/m/Y H:i') }}</td>
+            <td class="text-right">{{ $penjualan->created_at ? $penjualan->created_at->format('d/m/Y H:i') : date('d/m/Y H:i') }}</td>
         </tr>
         <tr>
             <td>Kasir</td>
@@ -233,8 +263,8 @@
             <td colspan="2"><strong>{{ $item->produk?->nama ?? 'Produk Dihapus' }}</strong></td>
         </tr>
         <tr>
-            <td>{{ $item->kuantitas }} x Rp {{ number_format($item->harga_satuan, 0, ',', '.') }}</td>
-            <td class="text-right">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</td>
+            <td>{{ $item->kuantitas }} x Rp {{ number_format($item->harga_satuan ?? $item->produk?->harga_jual ?? 0, 0, ',', '.') }}</td>
+            <td class="text-right">Rp {{ number_format($item->subtotal ?? 0, 0, ',', '.') }}</td>
         </tr>
         @endforeach
     </table>
@@ -244,12 +274,22 @@
     <table>
         <tr>
             <td><strong>TOTAL</strong></td>
-            <td class="text-right"><strong>Rp {{ number_format($penjualan->total_pembayaran, 0, ',', '.') }}</strong></td>
+            <td class="text-right"><strong>Rp {{ number_format($penjualan->total_pembayaran ?? 0, 0, ',', '.') }}</strong></td>
         </tr>
         <tr>
             <td>Metode Bayar</td>
-            <td class="text-right">{{ $penjualan->metode_pembayaran ?? 'CASH' }}</td>
+            <td class="text-right">{{ $penjualan->payment_method ?? $penjualan->metode_pembayaran ?? 'CASH' }}</td>
         </tr>
+        @if(($penjualan->payment_method ?? $penjualan->metode_pembayaran ?? 'CASH') === 'CASH')
+        <tr>
+            <td>BAYAR</td>
+            <td class="text-right">Rp {{ number_format($penjualan->paid_amount ?? 0, 0, ',', '.') }}</td>
+        </tr>
+        <tr>
+            <td>KEMBALI</td>
+            <td class="text-right">Rp {{ number_format(($penjualan->paid_amount ?? 0) - ($penjualan->total_pembayaran ?? 0), 0, ',', '.') }}</td>
+        </tr>
+        @endif
     </table>
 
     <div class="dashed"></div>
