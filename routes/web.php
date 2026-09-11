@@ -8,6 +8,7 @@ use App\Http\Controllers\JenisController; // <-- 1. Tambahkan import ini
 use App\Http\Controllers\PenjualanController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ProfileController;
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'index'])->name('login');
@@ -16,6 +17,8 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DasboardController::class, 'index'])->name('dashboard');
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+   
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {

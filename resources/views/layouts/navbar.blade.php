@@ -50,6 +50,13 @@
                 <i class="bi bi-receipt"></i>
                 <span>Penjualan</span>
             </a>
+
+            <!-- Menu Profil -->
+            <a href="{{ route('profile.index') }}"
+               class="sidebar-link {{ request()->routeIs('profile*') ? 'sidebar-link-active' : '' }}">
+                <i class="bi bi-person-circle"></i>
+                <span>Profil</span>
+            </a>
         </nav>
 
         <!-- User & Logout -->
