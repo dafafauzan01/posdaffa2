@@ -2,7 +2,7 @@
     <div class="sidebar-inner">
 
         <!-- Logo -->
-        <a class="sidebar-brand" href="{{ route('dashboard') }}">
+        <a class="sidebar-brand" href="{{ route('tentang') }}">
             <div class="sidebar-brand-icon">
                 <i class="bi bi-grid-1x2-fill"></i>
             </div>
@@ -51,12 +51,30 @@
                 <span>Penjualan</span>
             </a>
 
-            <!-- Menu Profil -->
-            <a href="{{ route('profile.index') }}"
-               class="sidebar-link {{ request()->routeIs('profile*') ? 'sidebar-link-active' : '' }}">
-                <i class="bi bi-person-circle"></i>
-                <span>Profil</span>
-            </a>
+            <!-- Menu Tentang (Dropdown Pilih Ke Bawah) -->
+            <details class="sidebar-dropdown" {{ request()->routeIs('tentang*') || request()->routeIs('tentangapk*') ? 'open' : '' }}>
+                <summary class="sidebar-link {{ request()->routeIs('tentang*') || request()->routeIs('tentangapk*') ? 'sidebar-link-active' : '' }}" style="cursor: pointer; justify-content: space-between; list-style: none;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <i class="bi bi-info-circle"></i>
+                        <span>Tentang</span>
+                    </div>
+                    <i class="bi bi-chevron-down dropdown-arrow"></i>
+                </summary>
+
+                <div class="sidebar-submenu">
+                    <a href="{{ route('tentangapk') }}"
+                       class="sidebar-link sidebar-sublink {{ request()->routeIs('tentangapk*') ? 'active-sublink' : '' }}">
+                        <i class="bi bi-phone"></i>
+                        <span>Tentang APK</span>
+                    </a>
+
+                    <a href="{{ route('tentang') }}"
+                       class="sidebar-link sidebar-sublink {{ request()->routeIs('tentang') && !request()->routeIs('tentangapk*') ? 'active-sublink' : '' }}">
+                        <i class="bi bi-building"></i>
+                        <span>Tentang Perusahaan</span>
+                    </a>
+                </div>
+            </details>
         </nav>
 
         <!-- User & Logout -->
@@ -176,6 +194,45 @@
         background: var(--accent-primary);
         color: var(--sidebar-active-text) !important;
         font-weight: 600;
+    }
+
+    /* Submenu Style */
+    details summary::-webkit-details-marker {
+        display: none;
+    }
+
+    .dropdown-arrow {
+        font-size: 0.8rem !important;
+        transition: transform 0.2s ease;
+    }
+
+    details[open] .dropdown-arrow {
+        transform: rotate(180deg);
+    }
+
+    .sidebar-submenu {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        padding-left: 1rem;
+        margin-top: 4px;
+    }
+
+    .sidebar-sublink {
+        font-size: 0.85rem !important;
+        padding: 0.55rem 0.75rem !important;
+        opacity: 0.85;
+    }
+
+    .sidebar-sublink:hover {
+        opacity: 1;
+    }
+
+    .active-sublink {
+        background: rgba(255, 255, 255, 0.15);
+        color: #ffffff !important;
+        font-weight: 600;
+        opacity: 1;
     }
 
     .sidebar-footer {

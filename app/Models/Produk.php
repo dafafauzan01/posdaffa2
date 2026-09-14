@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Produk extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $table = 'produk';
 
@@ -27,7 +28,7 @@ class Produk extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    // Relasi ke Jenis Produk (Wajib ada agar nama jenis bisa muncul di daftar produk)
+    // Relasi ke Jenis Produk
     public function jenis()
     {
         return $this->belongsTo(Jenis::class, 'jenis_id');

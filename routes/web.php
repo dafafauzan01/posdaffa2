@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DasboardController;
 use App\Http\Controllers\ItemPenjualanController;
-use App\Http\Controllers\JenisController; // <-- 1. Tambahkan import ini
+use App\Http\Controllers\JenisController; 
 use App\Http\Controllers\PenjualanController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\UserController;
@@ -18,7 +18,12 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DasboardController::class, 'index'])->name('dashboard');
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
-   
+    Route::get('/tentang', function () {
+    return view('tentang');
+})->name('tentang');
+  Route::get('/tentangapk', function () {
+    return view('tentangapk');
+})->name('tentangapk');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
