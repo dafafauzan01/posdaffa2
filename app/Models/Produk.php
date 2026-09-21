@@ -19,7 +19,8 @@ class Produk extends Model
         'nama',
         'harga_beli',
         'harga_jual',
-        'stok'
+        'stok',
+    
     ];
 
     // Relasi ke User (pembuat/pemilik)

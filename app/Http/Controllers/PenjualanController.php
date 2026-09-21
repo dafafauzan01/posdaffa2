@@ -47,6 +47,7 @@ class PenjualanController extends Controller
             ],
             [
                 'total_pembayaran'  => 0,
+                'diskon'            => 0,
                 'metode_pembayaran' => 'CASH',
                 'paid_amount'       => 0,
             ]
@@ -111,7 +112,18 @@ class PenjualanController extends Controller
      */
     public function update(Request $request, Penjualan $penjualan)
     {
-        $total = $penjualan->itemPenjualan()->sum('subtotal');
+        $subtotal = $penjualan->itemPenjualan()->sum('subtotal');
+
+        $request->validate([
+            'diskon' => 'nullable|integer|min:0|max:100',
+        ], [
+            'diskon.integer' => 'Diskon harus berupa angka bulat.',
+            'diskon.min' => 'Diskon tidak boleh kurang dari 0%.',
+            'diskon.max' => 'Diskon tidak boleh lebih dari 100%.',
+        ]);
+
+        $discount = (int) $request->input('diskon', 0);
+        $total = (int) round($subtotal * (100 - $discount) / 100);
 
         // Validasi input pembayaran
         $request->validate([
@@ -128,7 +140,7 @@ class PenjualanController extends Controller
             return back()->with('errors', 'Transaksi sudah diproses');
         }
 
-        if ($penjualan->itemPenjualan()->count() === 0) {
+        if ($penjualan->itemPenjualan()->count() === 0) {       
             return back()->with('errors', 'Keranjang masih kosong');
         }
 
@@ -142,6 +154,7 @@ class PenjualanController extends Controller
 
             $penjualan->update([
                 'metode_pembayaran' => $request->payment_method,
+                'diskon'            => $discount,
                 'total_pembayaran'  => $total,
                 'paid_amount'       => $paidAmount,
                 'status'            => 'COMPLETED'

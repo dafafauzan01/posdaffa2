@@ -67,6 +67,13 @@
                     </div>
 
                     <div class="card-body p-4 p-md-5">
+                        @if(session('login_lockout_seconds'))
+                            <div class="alert alert-warning small" role="alert">
+                                Login dikunci sementara. Coba lagi dalam
+                                <strong id="login-countdown">{{ session('login_lockout_seconds') }}</strong> detik.
+                            </div>
+                        @endif
+
                         <form action="{{ route('auth') }}" method="POST">
                             @csrf
 
@@ -87,13 +94,14 @@
                                 <input type="password"
                                        name="password"
                                        class="form-control form-control-lg rounded-3"
-                                       placeholder="••••••••">
+                                       placeholder="••••••••"
+                                       {{ session('login_lockout_seconds') ? 'disabled' : '' }}>
                                 @error('password')
                                     <div class="text-danger small mt-1">{{ $message }}</div>
                                 @enderror
                             </div>
 
-                            <button type="submit" class="btn btn-login btn-lg w-100 rounded-3 py-3 fw-medium">
+                            <button type="submit" class="btn btn-login btn-lg w-100 rounded-3 py-3 fw-medium" {{ session('login_lockout_seconds') ? 'disabled' : '' }}>
                                 MASUK
                             </button>
                         </form>
@@ -113,5 +121,21 @@
         </div>
     </div>
 </div>
+
+@if(session('login_lockout_seconds'))
+    <script>
+        let remaining = {{ session('login_lockout_seconds') }};
+        const countdown = document.getElementById('login-countdown');
+        const timer = setInterval(() => {
+            remaining -= 1;
+            countdown.textContent = Math.max(remaining, 0);
+
+            if (remaining <= 0) {
+                clearInterval(timer);
+                window.location.reload();
+            }
+        }, 1000);
+    </script>
+@endif
 
 @endsection

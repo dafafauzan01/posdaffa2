@@ -194,6 +194,7 @@
                     </div>
                 </div>
             </div>
+            
 
             {{-- ================= KERANJANG ================= --}}
             <div class="col-md-6">
@@ -264,6 +265,7 @@
                             @endforelse
                         </tbody>
                     </table>
+                    
 
                     {{-- FOOTER --}}
                     <div class="pos-footer">
@@ -322,6 +324,7 @@
                                     Checkout
                                 </button>
                             </form>
+                            
 
                             {{-- BATAL --}}
                             @can('delete', $sale)
@@ -337,6 +340,27 @@
                                 </form>
                             @endcan
                         @endif
+
+                            <form method="POST"
+                                  action="{{ route('penjualan.update', $sale->id) }}"
+                                  class="mb-2">
+                                @csrf
+                                @method('PATCH')    
+                                <div class="input-group">   
+                                    <input type="number" 
+                                           name="discount" 
+                                           class="form-control qty-input" 
+                                           placeholder="Diskon (Rp)" 
+                                           min="0" 
+                                           value="{{ $sale->discount ?? 0 }}">
+                                    <button type="submit" class="btn btn-outline-secondary">Terapkan</button>
+                                </div>
+                            </form>
+                            @if($sale->discount > 0)
+                                <div class="alert alert-info p-2 mb-0">
+                                    <small class="d-block">Diskon: <strong>Rp {{ number_format($sale->discount) }}</strong></small>
+                                </div>
+                            @endif
 
                     </div>
 

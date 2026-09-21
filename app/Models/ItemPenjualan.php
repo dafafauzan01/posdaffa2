@@ -16,7 +16,7 @@ class ItemPenjualan extends Model
         'produk_id',
         'kuantitas',
         'harga_satuan',
-        'subtotal'
+        'subtotal', 
     ];
 
     public function produk()

@@ -14,10 +14,20 @@ class Penjualan extends Model
     protected $fillable = [
         'user_id',
         'paid_amount',
+        'diskon',
         'total_pembayaran',
         'metode_pembayaran',
-        'status'
+        'status',   
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'diskon' => 'integer',
+            'paid_amount' => 'integer',
+            'total_pembayaran' => 'integer',
+        ];
+    }
 
     public function user()
     {

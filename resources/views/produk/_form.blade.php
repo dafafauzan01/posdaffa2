@@ -114,10 +114,13 @@
                name="selling_price" 
                id="selling_price"
                min="0"
+               readonly
                class="form-control @error('selling_price') is-invalid @enderror @error('harga_jual') is-invalid @enderror"
                value="{{ old('selling_price', $produk->harga_jual ?? $produk->selling_price ?? '') }}"
                placeholder="0"
                required>
+
+        <small class="text-muted d-block mt-1">Harga jual otomatis dihitung 30% dari harga pokok.</small>
 
         @error('selling_price')
             <div class="invalid-feedback">{{ $message }}</div>
@@ -158,7 +161,7 @@
     </a>
 </div>
 
-<!-- JavaScript Preview Gambar -->
+
 <script>
     function previewImage(input) {
         const preview = document.getElementById('preview');
@@ -172,4 +175,25 @@
             container.style.display = 'none';
         }
     }
+
+    function hitungHargaJualOtomatis() {
+        const hargaBeliInput = document.getElementById('purchase_price');
+        const hargaJualInput = document.getElementById('selling_price');
+
+        if (!hargaBeliInput || !hargaJualInput) return;
+
+        const hargaBeli = Number(hargaBeliInput.value) || 0;
+        const hargaJual = Math.round(hargaBeli * 1.3);
+
+        hargaJualInput.value = hargaJual;
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const hargaBeliInput = document.getElementById('purchase_price');
+
+        if (hargaBeliInput) {
+            hargaBeliInput.addEventListener('input', hitungHargaJualOtomatis);
+            hitungHargaJualOtomatis();
+        }
+    });
 </script>

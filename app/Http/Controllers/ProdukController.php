@@ -54,12 +54,17 @@ class ProdukController extends Controller
         $this->authorize('create', Produk::class);
         $dataReq = $request->validated();
 
+        $hargaBeli = (int) ($dataReq['purchase_price'] ?? $dataReq['harga_beli'] ?? 0);
+        $hargaJual = isset($dataReq['selling_price']) && $dataReq['selling_price'] !== ''
+            ? (int) $dataReq['selling_price']
+            : (int) round($hargaBeli * 1.3);
+
         $data = [
             'user_id'    => Auth::id(),
             'jenis_id'   => $dataReq['jenis_id'] ?? $dataReq['jenis'] ?? null,
             'nama'       => $dataReq['name'] ?? $dataReq['nama'] ?? null,
-            'harga_beli' => $dataReq['purchase_price'] ?? $dataReq['harga_beli'] ?? 0,
-            'harga_jual' => $dataReq['selling_price'] ?? $dataReq['harga_jual'] ?? 0,
+            'harga_beli' => $hargaBeli,
+            'harga_jual' => $hargaJual,
             'stok'       => $dataReq['stock'] ?? $dataReq['stok'] ?? 0,
         ];
 
@@ -104,12 +109,17 @@ class ProdukController extends Controller
         $this->authorize('update', $produk);
         $dataReq = $request->validated();
 
+        $hargaBeli = (int) ($dataReq['purchase_price'] ?? $dataReq['harga_beli'] ?? 0);
+        $hargaJual = isset($dataReq['selling_price']) && $dataReq['selling_price'] !== ''
+            ? (int) $dataReq['selling_price']
+            : (int) round($hargaBeli * 1.3);
+
         $data = [
             'user_id'    => Auth::id(),
             'jenis_id'   => $dataReq['jenis_id'] ?? $dataReq['jenis'] ?? null,
             'nama'       => $dataReq['name'] ?? $dataReq['nama'] ?? null,
-            'harga_beli' => $dataReq['purchase_price'] ?? $dataReq['harga_beli'] ?? 0,
-            'harga_jual' => $dataReq['selling_price'] ?? $dataReq['harga_jual'] ?? 0,
+            'harga_beli' => $hargaBeli,
+            'harga_jual' => $hargaJual,
             'stok'       => $dataReq['stock'] ?? $dataReq['stok'] ?? 0,
         ];
 

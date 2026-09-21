@@ -1,0 +1,5 @@
+1 pas login salah masukan password  pemberitahuaannya anda salah memasukan email dan password 1x 
+untuk yang kedua pemberitahuaannya anda salah memasukan email dan password 2x
+dan yang ke tiga lansgung kunci di timer pemberitahuannya anda telah salah memasukan password 3x
+2.tambahkan fitur diskon di penjualan tanpa eror 
+3. buat harga jual otmatis 30% dari harga pokok ~
