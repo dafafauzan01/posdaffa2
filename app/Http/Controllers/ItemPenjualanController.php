@@ -78,8 +78,8 @@ class ItemPenjualanController extends Controller
             $item->subtotal = $item->kuantitas * $item->harga_satuan;
             $item->save();
 
-            // TOTAL PEMBAYARAN
-            $sale->total_pembayaran = $sale->itemPenjualan()->sum('subtotal');
+            $subtotal = $sale->itemPenjualan()->sum('subtotal');
+            $sale->total_pembayaran = (int) round($subtotal * (100 - $sale->diskon) / 100);
             $sale->save();
         });
 
@@ -140,9 +140,10 @@ class ItemPenjualanController extends Controller
                 'subtotal'  => $request->quantity * $itempenjualan->harga_satuan,
             ]);
 
-            // Update total penjualan
-            $itempenjualan->penjualan->update([
-                'total_pembayaran' => $itempenjualan->penjualan->itemPenjualan()->sum('subtotal')
+            $sale = $itempenjualan->penjualan;
+            $subtotal = $sale->itemPenjualan()->sum('subtotal');
+            $sale->update([
+                'total_pembayaran' => (int) round($subtotal * (100 - $sale->diskon) / 100),
             ]);
         });
 
@@ -168,9 +169,9 @@ class ItemPenjualanController extends Controller
             // Hapus item dari keranjang
             $itempenjualan->delete();
 
-            // Update total penjualan
+            $subtotal = $sale->itemPenjualan()->sum('subtotal');
             $sale->update([
-                'total_pembayaran' => $sale->itemPenjualan()->sum('subtotal')
+                'total_pembayaran' => (int) round($subtotal * (100 - $sale->diskon) / 100),
             ]);
         });
 

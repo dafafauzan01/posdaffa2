@@ -341,24 +341,27 @@
                             @endcan
                         @endif
 
-                            <form method="POST"
-                                  action="{{ route('penjualan.update', $sale->id) }}"
-                                  class="mb-2">
-                                @csrf
-                                @method('PATCH')    
-                                <div class="input-group">   
-                                    <input type="number" 
-                                           name="discount" 
-                                           class="form-control qty-input" 
-                                           placeholder="Diskon (Rp)" 
-                                           min="0" 
-                                           value="{{ $sale->discount ?? 0 }}">
-                                    <button type="submit" class="btn btn-outline-secondary">Terapkan</button>
-                                </div>
-                            </form>
-                            @if($sale->discount > 0)
+                            @if ($sale->status === 'OPEN')
+                                <form method="POST"
+                                      action="{{ route('penjualan.update', $sale->id) }}"
+                                      class="mb-2">
+                                    @csrf
+                                    @method('PATCH')
+                                    <div class="input-group">
+                                        <input type="number"
+                                               name="diskon"
+                                               class="form-control qty-input"
+                                               placeholder="Diskon (%)"
+                                               min="0"
+                                               max="100"
+                                               value="{{ $sale->diskon ?? 0 }}">
+                                        <button type="submit" class="btn btn-outline-secondary">Terapkan</button>
+                                    </div>
+                                </form>
+                            @endif
+                            @if(($sale->diskon ?? 0) > 0)
                                 <div class="alert alert-info p-2 mb-0">
-                                    <small class="d-block">Diskon: <strong>Rp {{ number_format($sale->discount) }}</strong></small>
+                                    <small class="d-block">Diskon: <strong>{{ $sale->diskon }}%</strong></small>
                                 </div>
                             @endif
 

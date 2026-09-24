@@ -122,8 +122,21 @@ class PenjualanController extends Controller
             'diskon.max' => 'Diskon tidak boleh lebih dari 100%.',
         ]);
 
-        $discount = (int) $request->input('diskon', 0);
+        $discount = (int) $request->input('diskon', $penjualan->diskon ?? 0);
         $total = (int) round($subtotal * (100 - $discount) / 100);
+
+        if ($request->isMethod('patch')) {
+            if ($penjualan->status !== 'OPEN') {
+                return back()->with('errors', 'Transaksi sudah diproses');
+            }
+
+            $penjualan->update([
+                'diskon' => $discount,
+                'total_pembayaran' => $total,
+            ]);
+
+            return back()->with('success', 'Diskon berhasil diterapkan');
+        }
 
         // Validasi input pembayaran
         $request->validate([
@@ -144,7 +157,7 @@ class PenjualanController extends Controller
             return back()->with('errors', 'Keranjang masih kosong');
         }
 
-        DB::transaction(function () use ($penjualan, $request, $total) {
+        DB::transaction(function () use ($penjualan, $request, $discount, $total) {
 
             // Tentukan jumlah yang dibayar
             // Jika CASH diambil dari input form, jika QRIS dianggap pas sesuai total

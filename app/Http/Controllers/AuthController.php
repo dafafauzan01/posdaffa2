@@ -17,14 +17,13 @@ class AuthController extends Controller
 
     public function auth(LoginRequest $request)
     {
-        $key = 'login|' . strtolower($request->email) . '|' . $request->ip();
-        $lockoutSeconds = RateLimiter::availableIn($key);
+        $key = 'login|' . $request->ip();
 
-        if ($lockoutSeconds > 0) {
+        if (RateLimiter::tooManyAttempts($key, 3)) {
             return back()
                 ->withInput($request->only('email'))
-                ->withErrors(['email' => 'Terlalu banyak percobaan login. Silakan tunggu timer selesai.'])
-                ->with('login_lockout_seconds', $lockoutSeconds);
+                ->withErrors(['email' => 'Anda telah salah memasukan password 3x.'])
+                ->with('login_lockout_seconds', RateLimiter::availableIn($key));
         }
 
         if (Auth::attempt($request->validated())) {
@@ -40,12 +39,12 @@ class AuthController extends Controller
         if ($attempts >= 3) {
             return back()
                 ->withInput($request->only('email'))
-                ->withErrors(['email' => '3 percobaan login gagal. Silakan tunggu 60 detik sebelum mencoba lagi.'])
+                ->withErrors(['email' => 'Anda telah salah memasukan password 3x.'])
                 ->with('login_lockout_seconds', RateLimiter::availableIn($key));
         }
 
         return back()->withErrors([
-            'email' => "Email atau password tidak valid. Percobaan gagal {$attempts} dari 3.",
+            'email' => "Anda salah memasukan email dan password {$attempts}x.",
         ]);
     }
     public function logout (Request $request)
